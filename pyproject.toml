@@ -57,3 +57,4 @@ ignore = [
 markers = [
     "integration: requires a real CoreML model (run 'just convert-test-model' first)",
 ]
+addopts = "-v"
