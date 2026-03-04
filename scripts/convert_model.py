@@ -1,4 +1,5 @@
-"""Convert a HuggingFace causal LM to CoreML .mlpackage format.
+"""
+Convert a HuggingFace causal LM to CoreML .mlpackage format.
 
 Run via `just convert-test-model` which uses `uv run --isolated` with
 pinned dependencies to avoid version conflicts.
