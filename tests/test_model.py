@@ -17,6 +17,68 @@ class TestCoreMLModel:
         assert model.can_stream is True
 
 
+class TestExecuteTokenization:
+    """Test chat template vs plain tokenization fallback."""
+
+    def test_uses_plain_encode_when_no_chat_template(self) -> None:
+        """Completion models (e.g. GPT-2) without chat_template should use encode()."""
+        model = CoreMLModel("coreml/test", "/path", "org/tok")
+
+        tokenizer = MagicMock()
+        tokenizer.chat_template = None
+        tokenizer.encode.return_value = [1, 2, 3]
+        tokenizer.eos_token_id = 0
+        tokenizer.decode.return_value = "tok"
+        model._tokenizer = tokenizer
+
+        engine = MagicMock()
+        engine.generate.return_value = [4, 5]
+        model._engine = engine
+
+        prompt = MagicMock()
+        prompt.prompt = "Hello"
+        prompt.system = None
+        prompt.options = MagicMock()
+        prompt.options.max_tokens = 10
+        prompt.options.temperature = 0.0
+        prompt.options.top_p = 1.0
+
+        response = MagicMock()
+        list(model.execute(prompt, stream=True, response=response, conversation=None))
+
+        tokenizer.encode.assert_called_once_with("Hello")
+        tokenizer.apply_chat_template.assert_not_called()
+
+    def test_uses_chat_template_when_available(self) -> None:
+        """Chat models with chat_template should use apply_chat_template()."""
+        model = CoreMLModel("coreml/test", "/path", "org/tok")
+
+        tokenizer = MagicMock()
+        tokenizer.chat_template = "{% for m in messages %}{{ m.content }}{% endfor %}"
+        tokenizer.apply_chat_template.return_value = [1, 2, 3]
+        tokenizer.eos_token_id = 0
+        tokenizer.decode.return_value = "tok"
+        model._tokenizer = tokenizer
+
+        engine = MagicMock()
+        engine.generate.return_value = [4, 5]
+        model._engine = engine
+
+        prompt = MagicMock()
+        prompt.prompt = "Hello"
+        prompt.system = None
+        prompt.options = MagicMock()
+        prompt.options.max_tokens = 10
+        prompt.options.temperature = 0.0
+        prompt.options.top_p = 1.0
+
+        response = MagicMock()
+        list(model.execute(prompt, stream=True, response=response, conversation=None))
+
+        tokenizer.apply_chat_template.assert_called_once()
+        tokenizer.encode.assert_not_called()
+
+
 class TestBuildMessages:
     def test_simple_prompt(self) -> None:
         prompt = MagicMock()

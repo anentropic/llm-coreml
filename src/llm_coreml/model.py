@@ -75,11 +75,14 @@ class CoreMLModel(llm.Model):
         tokenizer = self._get_tokenizer()
         engine = self._get_engine()
 
-        messages = _build_messages(prompt, conversation)
-        input_ids: list[int] = tokenizer.apply_chat_template(
-            messages,
-            add_generation_prompt=True,
-        )
+        if getattr(tokenizer, "chat_template", None) is not None:
+            messages = _build_messages(prompt, conversation)
+            input_ids: list[int] = tokenizer.apply_chat_template(
+                messages,
+                add_generation_prompt=True,
+            )
+        else:
+            input_ids = tokenizer.encode(prompt.prompt or "")
 
         opts: CoreMLOptions = prompt.options  # type: ignore[assignment]
         token_count = 0
