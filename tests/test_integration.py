@@ -1,5 +1,7 @@
 """Integration tests exercising real CoreML inference with a converted model."""
 
+# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false
+
 from __future__ import annotations
 
 import sys
