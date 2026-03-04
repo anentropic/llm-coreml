@@ -60,6 +60,9 @@ class CoreMLModel(llm.Model):
 
     def _get_tokenizer(self) -> Any:
         if self._tokenizer is None:
+            import os
+
+            os.environ.setdefault("TRANSFORMERS_VERBOSITY", "error")
             from transformers import AutoTokenizer  # pyright: ignore[reportMissingTypeStubs]
 
             self._tokenizer = AutoTokenizer.from_pretrained(self.tokenizer_id)  # pyright: ignore[reportUnknownMemberType]

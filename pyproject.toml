@@ -1,6 +1,6 @@
 [project]
 name = "llm-coreml"
-version = "0.2.0"
+version = "0.3.0"
 description = "A plugin for https://github.com/simonw/llm for running local CoreML .mlpackage model files."
 readme = "README.md"
 authors = [

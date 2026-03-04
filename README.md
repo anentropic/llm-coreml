@@ -7,7 +7,13 @@ Point it at a model (and its corresponding HuggingFace tokenizer), then prompt i
 ## Requirements
 
 - macOS (CoreML is Apple-only)
-- Python 3.11+
+- Python 3.11–3.13 (`coremltools` does not yet ship native extensions for 3.14)
+
+If `llm` was installed with Python 3.14, reinstall it targeting 3.13:
+
+```bash
+uv tool install llm --python 3.13 --reinstall
+```
 
 ## Installation
 
@@ -141,7 +147,11 @@ If the model spec declares `stateDescriptions`, the plugin uses stateful inferen
 
 ### Tokenization
 
-The plugin uses `transformers.AutoTokenizer` with `apply_chat_template()` to handle chat formatting. The tokenizer is downloaded and cached the first time you use a model.
+The plugin uses `transformers.AutoTokenizer` for tokenization. The tokenizer is downloaded and cached the first time you use a model.
+
+For chat/instruct models (e.g. Llama-3-Instruct), the tokenizer's `chat_template` is used to format the conversation with system prompts and multi-turn history.
+
+For completion models without a chat template (e.g. GPT-2), the prompt text is tokenized directly. System prompts and conversation history are not supported for these models.
 
 ## Getting CoreML models
 
