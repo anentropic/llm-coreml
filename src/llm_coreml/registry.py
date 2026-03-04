@@ -26,9 +26,7 @@ def _write_registry(data: dict[str, Any]) -> None:
     path.write_text(json.dumps(data, indent=2) + "\n")
 
 
-def add_model(
-    name: str, path: str, tokenizer: str, compute_units: str = "all"
-) -> None:
+def add_model(name: str, path: str, tokenizer: str, compute_units: str = "all") -> None:
     """Register a model with the given name, path, tokenizer ID, and compute units."""
     registry = _read_registry()
     registry[name] = {
