@@ -64,7 +64,7 @@ jobs:
         run: |
           uv venv --python ${{ matrix.python-version }} test-env-wheel
           uv pip install --python test-env-wheel/bin/python dist/*.whl
-          test-env-wheel/bin/python -c "import {{ cookiecutter.package_name }}; print('Wheel installation OK')"
+          test-env-wheel/bin/python -c "import llm_coreml; print('Wheel installation OK')"
 
       - name: Test sdist installation
         run: |
@@ -120,3 +120,28 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    name: Create GitHub Release
+    needs: [publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Download changelog
+        uses: actions/download-artifact@v4
+        with:
+          name: changelog
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: CHANGELOG.md
+          files: dist/*
