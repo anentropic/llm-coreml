@@ -1,6 +1,8 @@
 # llm-coreml
 
-An [llm](https://github.com/simonw/llm) plugin that runs CoreML `.mlpackage` LLM models locally on macOS. Point it at a model and a HuggingFace tokenizer, then prompt it like any other llm model.
+A plugin for <https://llm.datasette.io/> cli tool that runs CoreML `.mlpackage` LLM models locally on macOS.
+
+Point it at a model (and its corresponding HuggingFace tokenizer), then prompt it like any other `llm` model.
 
 ## Requirements
 
@@ -23,7 +25,9 @@ llm install -e .
 
 ## Quick start
 
-Register a model with a name and a path to the `.mlpackage`. The `--tokenizer` argument is the HuggingFace model name to load the tokenizer from. This should match the model your `.mlpackage` was converted from:
+Register a model with a name and a path to the `.mlpackage`.
+
+The `--tokenizer` argument is the HuggingFace model name to load the tokenizer from. This should match the HF model your `.mlpackage` was derived from:
 
 ```bash
 llm coreml add my-llama /path/to/llama.mlpackage \
